@@ -1,6 +1,6 @@
-const { getUserById, createUser, deleteUserById } = require("./db/users")
-const { addMount, getTotalById, deleteAllMounts } = require("./db/mount")
-const { getIdByCommand } = require("./helpers/getIdByCommand")
+const { getUserById, createUser, deleteUserById } = require("../db/users")
+const { addMount, getTotalById, deleteAllMounts } = require("../db/mount")
+const { getIdByCommand } = require("./getIdByCommand")
 
 const start = async (ctx) => {
     ctx.replyWithHTML(`Puedo ayudarte a llevar un control de tus finanzas, revisa los siguientes comandos:

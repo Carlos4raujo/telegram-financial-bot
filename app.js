@@ -9,7 +9,7 @@ const {
   deleteProfile, 
   createProfile, 
   deleteHistory 
-} = require("./actions")
+} = require("./helpers/actions")
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN)
 
