@@ -9,13 +9,15 @@ const User = mongoose.model("User", {
   active: Boolean
 })
 
-const Message = mongoose.model("Message", {
-  UserId: Number,
+const Movements = mongoose.model("Movements", {
+  userId: Number,
   active: Boolean,
-  mount: Number,
+  amount: Number,
+  date: Date,
+  description: '',
 })
 
 module.exports = {
   User,
-  Message
+  Movements
 }

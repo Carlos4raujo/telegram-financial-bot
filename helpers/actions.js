@@ -1,5 +1,5 @@
 const { getUserById, createUser, deleteUserById } = require("../db/users")
-const { addMount, getTotalById, deleteAllMounts } = require("../db/mount")
+const { getTotalById, deleteAllAmounts, getLastMovements, getHistory } = require("../db/movements")
 const { getIdByCommand } = require("./getIdByCommand")
 
 const start = async (ctx) => {
@@ -27,31 +27,22 @@ const createProfile = async ctx => {
   }
 }
 
+const lastMovements = async ctx => {
+  const id = getIdByCommand(ctx)
+  const movements = await getLastMovements(id)
+  ctx.reply(movements.reduce((acc, { mount }) => acc += `${mount}\n`, ''))
+}
+
 const deleteProfile = async ctx => {
   const id = getIdByCommand(ctx)
   await deleteUserById(id)
-  await deleteAllMounts(id)
+  await deleteAllAmounts(id)
   ctx.reply('Tu perfil e historial ha sido borrado 😢')
-}
-
-const hearMount = async (ctx) => {
-  const { text, from } = ctx.message
-  const mount = parseFloat(text)
-  await addMount({ UserId: from.id, active: true, mount })
-  ctx.reply(`Haz ${mount > 0 ? "añadido" : "restado"} ${Math.abs(mount)} a tu ahorro... ${mount > 0 ? "🤑" : "😭"}`,
-    {
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "¿Quieres ver tu total?", callback_data: "show_total" }],
-        ],
-      },
-    }
-  )
 }
 
 const deleteHistory = async ctx => {
   const id = getIdByCommand(ctx)
-  await deleteAllMounts(id)
+  await deleteAllAmounts(id)
   ctx.reply('Tu historial ha sido borrado')
 }
 
@@ -67,12 +58,24 @@ const sendTotalFromTap = async ctx => {
   ctx.reply(`Tu total es de ${total}`)
 }
 
+const showHistory = async ctx => {
+  const { id } = getIdByCommand(ctx)
+  const history = await getHistory(id)
+  const total = await getTotalById(id)
+  ctx.replyWithHTML(history.reduce((acc, curr, index) => {
+    let message = acc+=`${curr.description ? curr.description : 'Sin descripcion'} - ${curr.amount}\n`
+    if(index + 1 === history.length) message += '<strong>TOTAL: ' + total + '</strong>'
+    return message
+  },''))
+}
+
 module.exports = {
   start,
-  hearMount,
   sendTotalFromCommand,
   sendTotalFromTap,
   deleteProfile,
   createProfile,
-  deleteHistory
+  deleteHistory, 
+  lastMovements,
+  showHistory
 }

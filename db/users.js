@@ -2,7 +2,6 @@ const { User } = require("./mongo")
 
 const getUserById = async (id, options = { active: true }) => {
 	const user = await User.findOne({ id, ...options }).exec()
-	console.log(user)
 	return user
 } 
 
@@ -17,8 +16,14 @@ const deleteUserById = async (id) => {
 	return deleteResult
 } 
 
+const existsUser = async userId => {
+	const user = await User.findOne({ userId })
+	return Boolean(user)
+}
+
 module.exports = {
 	getUserById,
 	createUser,
-	deleteUserById
+	deleteUserById,
+	existsUser
 }
