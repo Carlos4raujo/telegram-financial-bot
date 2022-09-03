@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  bot:
+    container_name: telegramfinancialbot
+    restart: always
+    build: .
+    links:
+      - mongo
+  mongo:
+    container_name: bottelegramdb
+    image: mongo
+    ports: 
+      - "27017:27017"
